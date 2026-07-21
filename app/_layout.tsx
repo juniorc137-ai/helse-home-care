@@ -1,5 +1,6 @@
 import "../src/global.css";
 import { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PaperProvider } from "react-native-paper";
 import { Stack } from "expo-router";
 import { useCarePlanStore } from "../src/store/carePlanStore";
@@ -17,11 +18,14 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <PaperProvider theme={{ colors: { primary: colors.primary } }}>
-      <Stack screenOptions={{ headerStyle: { backgroundColor: colors.primary }, headerTintColor: "#fff" }}>
-        <Stack.Screen name="index" options={{ title: "Home Care — Dashboard" }} />
-        <Stack.Screen name="patient/[id]" options={{ headerShown: false }} />
-      </Stack>
-    </PaperProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <PaperProvider theme={{ colors: { primary: colors.primary } }}>
+        <Stack screenOptions={{ headerStyle: { backgroundColor: colors.primary }, headerTintColor: "#fff" }}>
+          <Stack.Screen name="index" options={{ title: "Home Care — Dashboard" }} />
+          <Stack.Screen name="patient/new" options={{ title: "Novo Paciente" }} />
+          <Stack.Screen name="patient/[id]" options={{ headerShown: false }} />
+        </Stack>
+      </PaperProvider>
+    </GestureHandlerRootView>
   );
 }

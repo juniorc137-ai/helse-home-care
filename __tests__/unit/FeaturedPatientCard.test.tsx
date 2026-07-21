@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
-import { PatientCard } from "../../src/components/PatientCard";
+import { FeaturedPatientCard } from "../../src/components/FeaturedPatientCard";
 import type { Patient } from "../../src/types/entities";
 
 const patient: Patient = {
@@ -20,27 +20,18 @@ const patient: Patient = {
   deletedAt: null,
 };
 
-describe("<PatientCard /> (renderização, seção 2.1)", () => {
-  it("renderiza nome, diagnóstico e alertas", () => {
-    render(
-      <PatientCard
-        patient={patient}
-        alerts={[{ label: "TEC alterado (3.5s)", tone: "danger" }]}
-        nextAppointment="14:00"
-        taskCompletionPct={50}
-        onPress={() => {}}
-      />,
-    );
+describe("<FeaturedPatientCard /> (card principal do dia, redesign v2)", () => {
+  it("renderiza nome, diagnóstico e alertas do paciente mais urgente", () => {
+    render(<FeaturedPatientCard patient={patient} alerts={[{ label: "TEC alterado", tone: "danger" }]} onPress={() => {}} />);
+    expect(screen.getByText("Paciente do dia")).toBeTruthy();
     expect(screen.getByText("Maria Silva")).toBeTruthy();
-    expect(screen.getByText("Insuficiência Cardíaca Congestiva")).toBeTruthy();
-    expect(screen.getByText(/Próximo agendamento: 14:00/)).toBeTruthy();
-    expect(screen.getByText("TEC alterado (3.5s)")).toBeTruthy();
+    expect(screen.getByText("TEC alterado")).toBeTruthy();
   });
 
-  it("chama onPress ao tocar no card", () => {
+  it("chama onPress ao tocar", () => {
     const onPress = jest.fn();
-    render(<PatientCard patient={patient} alerts={[]} nextAppointment={null} taskCompletionPct={0} onPress={onPress} />);
-    fireEvent.press(screen.getByLabelText("Abrir perfil de Maria Silva"));
+    render(<FeaturedPatientCard patient={patient} alerts={[]} onPress={onPress} />);
+    fireEvent.press(screen.getByTestId("featured-patient-card"));
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 });

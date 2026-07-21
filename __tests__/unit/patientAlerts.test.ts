@@ -35,6 +35,7 @@ function pendingMedicationTask(): CarePlanTask {
     status: "pendente",
     timestampConclusao: null,
     notasDoProfissional: null,
+    priorityOrder: 0,
     createdAt: "2026-07-21T08:00:00.000Z",
     updatedAt: "2026-07-21T08:00:00.000Z",
     deletedAt: null,

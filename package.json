@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
+    "@hookform/resolvers": "^3.9.1",
     "@noble/ciphers": "^1.2.1",
     "@noble/hashes": "^1.7.0",
     "@react-native-async-storage/async-storage": "^2.1.0",
@@ -30,6 +31,7 @@
     "react-native-reanimated": "4.5.0",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "4.25.2",
+    "react-native-svg": "15.15.4",
     "react-native-web": "~0.21.0",
     "zod": "^3.24.1",
     "zustand": "^5.0.2"
@@ -47,6 +49,7 @@
   },
   "scripts": {
     "start": "expo start",
+    "dev": "expo start --web",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -56,6 +59,7 @@
   },
   "jest": {
     "preset": "jest-expo",
+    "resolver": "react-native-worklets/jest/resolver.js",
     "setupFiles": [
       "<rootDir>/jest.setup.js"
     ],

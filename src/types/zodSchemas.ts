@@ -1,6 +1,33 @@
 import { z } from "zod";
+import { isValidCPF } from "../utils/cpf";
 
 /** Schemas Zod usados para validar payloads do Sync Contract (seção 4.5) antes de persistir/enfileirar. */
+
+/** Ano mínimo aceito para data de nascimento (limite de sanidade do formulário, não uma norma clínica). */
+export const MIN_BIRTH_YEAR = 1900;
+
+function isValidBirthDate(value: string): boolean {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return false;
+  if (date.getTime() > Date.now()) return false;
+  return date.getFullYear() >= MIN_BIRTH_YEAR;
+}
+
+/** Formulário "Novo Paciente" (seção 2.1/2.2): campos coletados na criação. */
+export const newPatientFormSchema = z.object({
+  name: z.string().trim().min(1, "Nome é obrigatório"),
+  cpf: z.string().refine(isValidCPF, { message: "CPF inválido" }),
+  birthDate: z.string().refine(isValidBirthDate, { message: "Data de nascimento inválida" }),
+  sex: z.enum(["feminino", "masculino", "outro"], {
+    errorMap: () => ({ message: "Selecione o sexo" }),
+  }),
+  mainDiagnosis: z.string().trim().min(1, "Diagnóstico principal é obrigatório"),
+  comorbidities: z.string(),
+  allergies: z.string(),
+  activeMedications: z.string(),
+});
+
+export type NewPatientFormValues = z.infer<typeof newPatientFormSchema>;
 
 export const bradenScoresSchema = z.object({
   percepcaoSensorial: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]),

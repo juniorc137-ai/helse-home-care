@@ -90,6 +90,8 @@ export interface CarePlanTask {
   status: CarePlanTaskStatus;
   timestampConclusao: string | null;
   notasDoProfissional: string | null;
+  /** Ordem de prioridade dentro da coluna do Kanban (drag-and-drop reordena, nunca muda status). */
+  priorityOrder: number;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
@@ -211,6 +213,7 @@ export interface ClinicalNote {
 // ---------------------------------------------------------------------------
 
 export type AuditAction =
+  | "patient.create"
   | "task.create"
   | "task.update"
   | "task.complete"

@@ -23,7 +23,10 @@ export function PatientSectionNav({ patientId }: PatientSectionNavProps) {
         const isActive = pathname === href || (section.href === "" && pathname === `/patient/${patientId}`);
         return (
           <Link key={section.href} href={href as never} asChild>
-            <Text style={[styles.tab, isActive && styles.tabActive]} accessibilityRole="link">
+            <Text
+              style={StyleSheet.flatten([styles.tab, isActive && styles.tabActive])}
+              accessibilityRole="link"
+            >
               {section.label}
             </Text>
           </Link>

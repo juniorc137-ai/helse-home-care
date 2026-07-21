@@ -16,6 +16,7 @@ function makeTask(overrides: Partial<CarePlanTask> = {}): CarePlanTask {
     status: "pendente",
     timestampConclusao: null,
     notasDoProfissional: null,
+    priorityOrder: 0,
     createdAt: "2026-07-21T08:00:00.000Z",
     updatedAt: "2026-07-21T08:00:00.000Z",
     deletedAt: null,
@@ -112,5 +113,33 @@ describe("useCarePlanStore", () => {
     expect(() =>
       useCarePlanStore.getState().editTask(USER, PATIENT, task!.id, { descricao: "Editada" }),
     ).toThrow();
+  });
+
+  it("reorderTasks reordena prioridade sem alterar status (Kanban, redesign v2)", () => {
+    let taskA: CarePlanTask | undefined;
+    let taskB: CarePlanTask | undefined;
+    act(() => {
+      taskA = useCarePlanStore.getState().addTask(USER, PATIENT, {
+        descricao: "A",
+        tipo: "curativo",
+        horarioAgendado: "2026-07-21T14:00:00.000Z",
+        profissionalResponsavel: USER,
+      });
+      taskB = useCarePlanStore.getState().addTask(USER, PATIENT, {
+        descricao: "B",
+        tipo: "monitoramento",
+        horarioAgendado: "2026-07-21T15:00:00.000Z",
+        profissionalResponsavel: USER,
+      });
+    });
+
+    act(() => {
+      useCarePlanStore.getState().reorderTasks(PATIENT, [taskB!.id, taskA!.id]);
+    });
+
+    const tasks = useCarePlanStore.getState().tasksByPatient[PATIENT];
+    expect(tasks.find((t) => t.id === taskB!.id)?.priorityOrder).toBe(0);
+    expect(tasks.find((t) => t.id === taskA!.id)?.priorityOrder).toBe(1);
+    expect(tasks.find((t) => t.id === taskA!.id)?.status).toBe("pendente");
   });
 });

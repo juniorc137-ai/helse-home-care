@@ -118,6 +118,7 @@ export function generateMockCarePlanTasks(patientId: string, referenceDate: Date
       status: t.status,
       timestampConclusao: t.status === "concluida" ? nowIso : null,
       notasDoProfissional: null,
+      priorityOrder: idx,
       createdAt: nowIso,
       updatedAt: nowIso,
       deletedAt: null,

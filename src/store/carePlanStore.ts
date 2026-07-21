@@ -18,6 +18,8 @@ interface CarePlanState {
   completeTask: (userId: string, patientId: string, taskId: string) => void;
   editTask: (userId: string, patientId: string, taskId: string, changes: Partial<CarePlanTask>) => void;
   removeTask: (userId: string, patientId: string, taskId: string) => void;
+  /** Kanban (redesign v2): reordena prioridade por arrastar. Nunca altera status/conclusão. */
+  reorderTasks: (patientId: string, orderedTaskIds: string[]) => void;
 }
 
 /** Sem sobreposição de agendamentos para o mesmo paciente (seção 2.3). */
@@ -60,6 +62,7 @@ export const useCarePlanStore = create<CarePlanState>()(
         status: "pendente",
         timestampConclusao: null,
         notasDoProfissional: null,
+        priorityOrder: existing.length,
         createdAt: now,
         updatedAt: now,
         deletedAt: null,
@@ -117,5 +120,14 @@ export const useCarePlanStore = create<CarePlanState>()(
       });
       recordAuditEvent({ userId, action: "task.remove", entityType: "carePlanTask", entityId: taskId, before, after: null });
     },
+    reorderTasks: (patientId, orderedTaskIds) =>
+      set((state) => {
+        const tasks = state.tasksByPatient[patientId];
+        if (!tasks) return;
+        orderedTaskIds.forEach((taskId, index) => {
+          const task = tasks.find((t) => t.id === taskId);
+          if (task) task.priorityOrder = index;
+        });
+      }),
   })),
 );

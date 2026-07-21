@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
-import { ScrollView, StyleSheet, View } from "react-native";
-import { CarePlanSection } from "../../../src/components/CarePlanSection";
+import { StyleSheet, View } from "react-native";
+import { KanbanBoard } from "../../../src/components/care-plan/KanbanBoard";
 import { PatientSectionNav } from "../../../src/components/PatientSectionNav";
 import { colors } from "../../../src/constants/theme";
 
@@ -10,14 +10,14 @@ export default function CarePlanScreen() {
   return (
     <View style={styles.container}>
       <PatientSectionNav patientId={id} />
-      <ScrollView contentContainerStyle={styles.content}>
-        <CarePlanSection patientId={id} />
-      </ScrollView>
+      <View style={styles.content}>
+        <KanbanBoard patientId={id} />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.surface },
-  content: { padding: 16 },
+  content: { flex: 1, padding: 16 },
 });
