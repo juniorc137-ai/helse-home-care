@@ -20,7 +20,7 @@ export default function RootLayout() {
     <PaperProvider theme={{ colors: { primary: colors.primary } }}>
       <Stack screenOptions={{ headerStyle: { backgroundColor: colors.primary }, headerTintColor: "#fff" }}>
         <Stack.Screen name="index" options={{ title: "Home Care — Dashboard" }} />
-        <Stack.Screen name="patient/[id]" options={{ title: "Paciente" }} />
+        <Stack.Screen name="patient/[id]" options={{ headerShown: false }} />
       </Stack>
     </PaperProvider>
   );

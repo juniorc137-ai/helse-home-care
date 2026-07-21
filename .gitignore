@@ -36,8 +36,8 @@ yarn-error.*
 # local env files
 .env*.local
 
-# local Claude Code session settings (machine-specific)
-.claude/settings.local.json
+# local Claude Code session state (machine-specific)
+.claude/
 
 # typescript
 *.tsbuildinfo

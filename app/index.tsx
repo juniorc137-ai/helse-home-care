@@ -13,7 +13,8 @@ import { getPatientAlerts } from "../src/utils/patientAlerts";
 export default function DashboardScreen() {
   const router = useRouter();
   const { isDesktop } = useResponsive();
-  const patients = usePatientStore((s) => s.patients.filter((p) => !p.deletedAt));
+  const allPatients = usePatientStore((s) => s.patients);
+  const patients = allPatients.filter((p) => !p.deletedAt);
   const tasksByPatient = useCarePlanStore((s) => s.tasksByPatient);
   const assessmentsByPatient = useIndicatorStore((s) => s.assessmentsByPatient);
 
