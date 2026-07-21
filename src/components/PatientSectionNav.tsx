@@ -1,6 +1,8 @@
 import { Link, usePathname } from "expo-router";
 import { ScrollView, StyleSheet, Text } from "react-native";
-import { colors, minTouchTarget } from "../constants/theme";
+import { minTouchTarget } from "../constants/theme";
+import type { ThemeTokens } from "../theme/tokens";
+import { useThemedStyles } from "../theme/useThemedStyles";
 
 interface PatientSectionNavProps {
   patientId: string;
@@ -10,11 +12,33 @@ const SECTIONS = [
   { href: "", label: "Perfil" },
   { href: "/care-plan", label: "Plano de Cuidados" },
   { href: "/indicators", label: "Indicadores" },
+  { href: "/notes", label: "Anotações" },
 ] as const;
 
-/** Navegação entre Perfil / Plano de Cuidados / Indicadores (seção 2.2-2.4). */
+function createStyles(tokens: ThemeTokens) {
+  return StyleSheet.create({
+    container: { backgroundColor: tokens.bg, borderBottomWidth: 1, borderBottomColor: tokens.border },
+    content: { paddingHorizontal: 8, gap: 4 },
+    tab: {
+      minHeight: minTouchTarget.android,
+      textAlignVertical: "center",
+      paddingHorizontal: 16,
+      fontSize: 14,
+      fontWeight: "600",
+      color: tokens.inkSecondary,
+    },
+    tabActive: {
+      color: tokens.primary,
+      borderBottomWidth: 2,
+      borderBottomColor: tokens.primary,
+    },
+  });
+}
+
+/** Navegação entre Perfil / Plano de Cuidados / Indicadores / Anotações (seção 2.2-2.5). */
 export function PatientSectionNav({ patientId }: PatientSectionNavProps) {
   const pathname = usePathname();
+  const styles = useThemedStyles(createStyles);
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.container} contentContainerStyle={styles.content}>
@@ -35,21 +59,3 @@ export function PatientSectionNav({ patientId }: PatientSectionNavProps) {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { backgroundColor: colors.background, borderBottomWidth: 1, borderBottomColor: colors.border },
-  content: { paddingHorizontal: 8, gap: 4 },
-  tab: {
-    minHeight: minTouchTarget.android,
-    textAlignVertical: "center",
-    paddingHorizontal: 16,
-    fontSize: 14,
-    fontWeight: "600",
-    color: colors.textSecondary,
-  },
-  tabActive: {
-    color: colors.primary,
-    borderBottomWidth: 2,
-    borderBottomColor: colors.primary,
-  },
-});

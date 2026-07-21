@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
-import { colors, radii, shadows, spacing } from "../constants/theme";
+import { radii, shadows, spacing } from "../constants/theme";
 import { useCarePlanStore } from "../store/carePlanStore";
 import { useIndicatorStore } from "../store/indicatorStore";
+import type { ThemeTokens } from "../theme/tokens";
+import { useThemedStyles } from "../theme/useThemedStyles";
 import type { CarePlanTask, IndicatorAssessment } from "../types/entities";
 import { calculateAssessmentsUpToDatePct, calculatePatientBadges, calculateTaskCompletionPct } from "../utils/patientProgress";
 import { ProgressBar } from "./ProgressBar";
@@ -19,6 +21,7 @@ const EMPTY_ASSESSMENTS: IndicatorAssessment[] = [];
  * (ver ADR-006, docs/DECISIONS.md).
  */
 export function PatientBadgesSection({ patientId }: PatientBadgesSectionProps) {
+  const styles = useThemedStyles(createStyles);
   const tasks = useCarePlanStore((s) => s.tasksByPatient[patientId] ?? EMPTY_TASKS);
   const assessments = useIndicatorStore((s) => s.assessmentsByPatient[patientId] ?? EMPTY_ASSESSMENTS);
 
@@ -47,24 +50,26 @@ export function PatientBadgesSection({ patientId }: PatientBadgesSectionProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.surfaceRaised,
-    borderRadius: radii.lg,
-    padding: spacing.md,
-    ...shadows.md,
-  },
-  title: { fontSize: 18, fontWeight: "700", color: colors.textPrimary, marginBottom: spacing.sm },
-  badgesRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs, marginTop: spacing.md },
-  badge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    backgroundColor: colors.primaryMuted,
-    borderRadius: radii.full,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-  },
-  badgeEmoji: { fontSize: 16 },
-  badgeLabel: { fontSize: 13, fontWeight: "600", color: colors.primary },
-});
+function createStyles(tokens: ThemeTokens) {
+  return StyleSheet.create({
+    card: {
+      backgroundColor: tokens.surfaceRaised,
+      borderRadius: radii.lg,
+      padding: spacing.md,
+      ...shadows.md,
+    },
+    title: { fontSize: 18, fontWeight: "700", color: tokens.ink, marginBottom: spacing.sm },
+    badgesRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs, marginTop: spacing.md },
+    badge: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      backgroundColor: tokens.primaryMuted,
+      borderRadius: radii.full,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+    },
+    badgeEmoji: { fontSize: 16 },
+    badgeLabel: { fontSize: 13, fontWeight: "600", color: tokens.primary },
+  });
+}

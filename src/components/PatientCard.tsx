@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
-import { colors, minTouchTarget, radii, shadows, spacing } from "../constants/theme";
+import { minTouchTarget, radii, shadows, spacing } from "../constants/theme";
+import { useThemedStyles } from "../theme/useThemedStyles";
+import type { ThemeTokens } from "../theme/tokens";
 import type { Patient } from "../types/entities";
 import type { PatientAlert } from "../utils/patientAlerts";
 import { ProgressBar } from "./ProgressBar";
@@ -15,8 +17,43 @@ interface PatientCardProps {
   onPress: () => void;
 }
 
+function createStyles(tokens: ThemeTokens) {
+  return StyleSheet.create({
+    card: {
+      minHeight: minTouchTarget.android * 2,
+      backgroundColor: tokens.surfaceRaised,
+      borderRadius: radii.lg,
+      padding: spacing.md,
+      marginBottom: spacing.sm,
+      gap: 6,
+      ...shadows.sm,
+    },
+    name: {
+      fontSize: 16,
+      fontWeight: "700",
+      color: tokens.ink,
+    },
+    diagnosis: {
+      fontSize: 14,
+      color: tokens.inkSecondary,
+    },
+    appointment: {
+      fontSize: 14,
+      color: tokens.inkSecondary,
+    },
+    alertsRow: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 6,
+      marginTop: 4,
+    },
+    progressWrapper: { marginTop: spacing.xs },
+  });
+}
+
 /** Card do dashboard (seção 2.1, redesign v2). Tap abre o Perfil; toque ≥ 44pt/48dp; micro-interação suave. */
 export function PatientCard({ patient, alerts, nextAppointment, taskCompletionPct, onPress }: PatientCardProps) {
+  const styles = useThemedStyles(createStyles);
   const pressed = useSharedValue(0);
   const [hovered, setHovered] = useState(false);
 
@@ -59,35 +96,3 @@ export function PatientCard({ patient, alerts, nextAppointment, taskCompletionPc
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    minHeight: minTouchTarget.android * 2,
-    backgroundColor: colors.surfaceRaised,
-    borderRadius: radii.lg,
-    padding: spacing.md,
-    marginBottom: spacing.sm,
-    gap: 6,
-    ...shadows.sm,
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: colors.textPrimary,
-  },
-  diagnosis: {
-    fontSize: 14,
-    color: colors.textSecondary,
-  },
-  appointment: {
-    fontSize: 14,
-    color: colors.textSecondary,
-  },
-  alertsRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 6,
-    marginTop: 4,
-  },
-  progressWrapper: { marginTop: spacing.xs },
-});

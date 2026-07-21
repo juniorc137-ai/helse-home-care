@@ -1,7 +1,8 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { colors } from "../../constants/theme";
 import { useCarePlanStore } from "../../store/carePlanStore";
 import { useResponsive } from "../../hooks/useResponsive";
+import type { ThemeTokens } from "../../theme/tokens";
+import { useThemedStyles } from "../../theme/useThemedStyles";
 import type { CarePlanTask } from "../../types/entities";
 import { bucketTasksForKanban, KANBAN_COLUMNS } from "../../utils/kanbanBuckets";
 import { KanbanColumn } from "./KanbanColumn";
@@ -17,6 +18,7 @@ const EMPTY_TASKS: CarePlanTask[] = [];
 /** Kanban do Care Plan (seção 2.3, redesign v2): Pendente | Hoje | Completo. */
 export function KanbanBoard({ patientId }: KanbanBoardProps) {
   const { isDesktop } = useResponsive();
+  const styles = useThemedStyles(createStyles);
   const tasks = useCarePlanStore((s) => s.tasksByPatient[patientId] ?? EMPTY_TASKS);
   const buckets = bucketTasksForKanban(tasks);
 
@@ -43,9 +45,11 @@ export function KanbanBoard({ patientId }: KanbanBoardProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  desktopRow: { flexDirection: "row", gap: 20, alignItems: "flex-start" },
-  mobileStack: { gap: 24, paddingBottom: 32 },
-  emptyState: { padding: 24, alignItems: "center" },
-  emptyText: { color: colors.textSecondary, fontSize: 14 },
-});
+function createStyles(tokens: ThemeTokens) {
+  return StyleSheet.create({
+    desktopRow: { flexDirection: "row", gap: 20, alignItems: "flex-start" },
+    mobileStack: { gap: 24, paddingBottom: 32 },
+    emptyState: { padding: 24, alignItems: "center" },
+    emptyText: { color: tokens.inkSecondary, fontSize: 14 },
+  });
+}

@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react-native";
+import { render, screen } from "../testUtils";
 import { KanbanBoard } from "../../src/components/care-plan/KanbanBoard";
 import { useCarePlanStore } from "../../src/store/carePlanStore";
 

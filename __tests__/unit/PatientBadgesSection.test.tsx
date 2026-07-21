@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react-native";
+import { render, screen } from "../testUtils";
 import { PatientBadgesSection } from "../../src/components/PatientBadgesSection";
 import { useCarePlanStore } from "../../src/store/carePlanStore";
 import { useIndicatorStore } from "../../src/store/indicatorStore";

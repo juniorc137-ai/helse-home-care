@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react-native";
+import { fireEvent, render, screen } from "../testUtils";
 import { PatientCard } from "../../src/components/PatientCard";
 import type { Patient } from "../../src/types/entities";
 

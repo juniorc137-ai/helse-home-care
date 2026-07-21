@@ -3,8 +3,9 @@ import { ScrollView, StyleSheet, Text } from "react-native";
 import { Button } from "react-native-paper";
 import { calculateMorseScore, classifyMorseScore, type MorseScores } from "../constants/clinicalScales";
 import { MOCK_CURRENT_USER_ID } from "../constants/mockSession";
-import { colors } from "../constants/theme";
 import { useIndicatorStore } from "../store/indicatorStore";
+import type { ThemeTokens } from "../theme/tokens";
+import { useThemedStyles } from "../theme/useThemedStyles";
 import { Card } from "./Card";
 import { SubscalePicker } from "./SubscalePicker";
 
@@ -70,6 +71,7 @@ const MORSE_ITEMS: Array<{ key: keyof MorseScores; title: string; options: Array
 ];
 
 export function MorseForm({ patientId, onSubmitted }: MorseFormProps) {
+  const styles = useThemedStyles(createStyles);
   const [scores, setScores] = useState<PartialMorse>({});
   const addAssessment = useIndicatorStore((s) => s.addAssessment);
 
@@ -117,8 +119,10 @@ export function MorseForm({ patientId, onSubmitted }: MorseFormProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { gap: 12, paddingBottom: 32 },
-  resultScore: { fontSize: 16, fontWeight: "700", color: colors.textPrimary },
-  pending: { fontSize: 13, color: colors.textSecondary },
-});
+function createStyles(tokens: ThemeTokens) {
+  return StyleSheet.create({
+    container: { gap: 12, paddingBottom: 32 },
+    resultScore: { fontSize: 16, fontWeight: "700", color: tokens.ink },
+    pending: { fontSize: 13, color: tokens.inkSecondary },
+  });
+}

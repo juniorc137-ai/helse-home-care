@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react-native";
+import { render, screen } from "../testUtils";
 import { QuickStats } from "../../src/components/QuickStats";
 
 describe("<QuickStats />", () => {

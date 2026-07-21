@@ -2,11 +2,13 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScrollView, StyleSheet } from "react-native";
 import { TecForm } from "../../../../src/components/TecForm";
 import { useToast } from "../../../../src/components/Toast";
-import { colors } from "../../../../src/constants/theme";
+import type { ThemeTokens } from "../../../../src/theme/tokens";
+import { useThemedStyles } from "../../../../src/theme/useThemedStyles";
 
 export default function TecScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const styles = useThemedStyles(createStyles);
   const [toast, toastElement] = useToast();
 
   return (
@@ -23,7 +25,9 @@ export default function TecScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.surface },
-  content: { padding: 16 },
-});
+function createStyles(tokens: ThemeTokens) {
+  return StyleSheet.create({
+    container: { flex: 1, backgroundColor: tokens.surface },
+    content: { padding: 16 },
+  });
+}

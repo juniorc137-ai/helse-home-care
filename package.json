@@ -65,7 +65,8 @@
     ],
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "<rootDir>/__tests__/fixtures/"
+      "<rootDir>/__tests__/fixtures/",
+      "<rootDir>/__tests__/testUtils.tsx"
     ],
     "moduleNameMapper": {
       "^immer$": "<rootDir>/node_modules/immer/dist/cjs/index.js"

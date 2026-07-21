@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react-native";
+import { render, screen } from "../testUtils";
 import { HealthCard } from "../../src/components/HealthCard";
 import { useIndicatorStore } from "../../src/store/indicatorStore";
 import { BRADEN_FIXTURE_HIGH_RISK, TEC_FIXTURE_ALTERED_SECONDS } from "../fixtures/clinicalFixtures";

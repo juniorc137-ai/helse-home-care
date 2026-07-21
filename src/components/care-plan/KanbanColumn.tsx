@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
-import { colors, radii, spacing } from "../../constants/theme";
+import { radii, spacing } from "../../constants/theme";
 import { MOCK_CURRENT_USER_ID } from "../../constants/mockSession";
 import { useCarePlanStore } from "../../store/carePlanStore";
+import type { ThemeTokens } from "../../theme/tokens";
+import { useThemedStyles } from "../../theme/useThemedStyles";
 import type { CarePlanTask } from "../../types/entities";
 import { computeReorderedIds } from "../../utils/kanbanGestures";
 import { TaskKanbanCard } from "./TaskKanbanCard";
@@ -15,6 +17,7 @@ interface KanbanColumnProps {
 
 /** Coluna do Kanban (Pendente | Hoje | Completo). Arrastar reordena prioridade só dentro da coluna. */
 export function KanbanColumn({ title, tasks, patientId, allowSwipeToComplete }: KanbanColumnProps) {
+  const styles = useThemedStyles(createStyles);
   const completeTask = useCarePlanStore((s) => s.completeTask);
   const reorderTasks = useCarePlanStore((s) => s.reorderTasks);
 
@@ -54,19 +57,21 @@ export function KanbanColumn({ title, tasks, patientId, allowSwipeToComplete }: 
   );
 }
 
-const styles = StyleSheet.create({
-  column: { flex: 1, minWidth: 260, gap: spacing.xs },
-  header: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: spacing.xs },
-  title: { fontSize: 15, fontWeight: "700", color: colors.textPrimary },
-  countBadge: {
-    minWidth: 22,
-    height: 22,
-    borderRadius: radii.full,
-    backgroundColor: colors.surface,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 6,
-  },
-  countText: { fontSize: 12, fontWeight: "700", color: colors.textSecondary },
-  empty: { fontSize: 13, color: colors.textMuted, fontStyle: "italic" },
-});
+function createStyles(tokens: ThemeTokens) {
+  return StyleSheet.create({
+    column: { flex: 1, minWidth: 260, gap: spacing.xs },
+    header: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: spacing.xs },
+    title: { fontSize: 15, fontWeight: "700", color: tokens.ink },
+    countBadge: {
+      minWidth: 22,
+      height: 22,
+      borderRadius: radii.full,
+      backgroundColor: tokens.surface,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: 6,
+    },
+    countText: { fontSize: 12, fontWeight: "700", color: tokens.inkSecondary },
+    empty: { fontSize: 13, color: tokens.inkMuted, fontStyle: "italic" },
+  });
+}

@@ -1,5 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { colors, minTouchTarget } from "../constants/theme";
+import { minTouchTarget } from "../constants/theme";
+import type { ThemeTokens } from "../theme/tokens";
+import { useThemedStyles } from "../theme/useThemedStyles";
 
 export interface SubscaleOption {
   score: number;
@@ -15,8 +17,32 @@ interface SubscalePickerProps {
   testID?: string;
 }
 
+function createStyles(tokens: ThemeTokens) {
+  return StyleSheet.create({
+    container: { gap: 6, marginBottom: 12 },
+    title: { fontSize: 14, fontWeight: "700", color: tokens.ink },
+    option: {
+      minHeight: minTouchTarget.android,
+      justifyContent: "center",
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: tokens.border,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+    },
+    optionSelected: {
+      borderColor: tokens.primary,
+      backgroundColor: tokens.statusOkBg,
+    },
+    optionText: { fontSize: 14, color: tokens.ink },
+    optionTextSelected: { fontWeight: "700" },
+    helperText: { fontSize: 12, color: tokens.inkSecondary, marginTop: 4 },
+  });
+}
+
 /** Seletor de nível de uma subescala (Braden/Morse); zona de toque ≥ 48dp (seção 4.1). */
 export function SubscalePicker({ title, options, selected, onSelect, testID }: SubscalePickerProps) {
+  const styles = useThemedStyles(createStyles);
   return (
     <View style={styles.container} testID={testID}>
       <Text style={styles.title}>{title}</Text>
@@ -41,24 +67,3 @@ export function SubscalePicker({ title, options, selected, onSelect, testID }: S
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { gap: 6, marginBottom: 12 },
-  title: { fontSize: 14, fontWeight: "700", color: colors.textPrimary },
-  option: {
-    minHeight: minTouchTarget.android,
-    justifyContent: "center",
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors.border,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  optionSelected: {
-    borderColor: colors.primary,
-    backgroundColor: colors.statusOkBg,
-  },
-  optionText: { fontSize: 14, color: colors.textPrimary },
-  optionTextSelected: { fontWeight: "700" },
-  helperText: { fontSize: 12, color: colors.textSecondary, marginTop: 4 },
-});

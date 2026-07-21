@@ -13,7 +13,7 @@ function isValidBirthDate(value: string): boolean {
   return date.getFullYear() >= MIN_BIRTH_YEAR;
 }
 
-/** Formulário "Novo Paciente" (seção 2.1/2.2): campos coletados na criação. */
+/** Formulário "Novo Paciente" (seção 2.1/2.2, ADR-005 revisado): campos coletados na criação. */
 export const newPatientFormSchema = z.object({
   name: z.string().trim().min(1, "Nome é obrigatório"),
   cpf: z.string().refine(isValidCPF, { message: "CPF inválido" }),
@@ -25,6 +25,13 @@ export const newPatientFormSchema = z.object({
   comorbidities: z.string(),
   allergies: z.string(),
   activeMedications: z.string(),
+  emergencyContactName: z.string().trim().min(1, "Nome do contato de emergência é obrigatório"),
+  emergencyContactRelationship: z.string().trim().min(1, "Relação com o paciente é obrigatória"),
+  emergencyContactPhone: z.string().trim().min(8, "Telefone inválido"),
+  caregiverName: z.string().trim().min(1, "Nome do cuidador é obrigatório"),
+  caregiverRelationship: z.string().trim().min(1, "Relação do cuidador é obrigatória"),
+  caregiverAvailability: z.string().trim().min(1, "Disponibilidade do cuidador é obrigatória"),
+  consentGiven: z.boolean(),
 });
 
 export type NewPatientFormValues = z.infer<typeof newPatientFormSchema>;

@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
-import { colors, radii, shadows, spacing } from "../constants/theme";
+import { radii, shadows, spacing } from "../constants/theme";
 import { useCarePlanStore } from "../store/carePlanStore";
 import { useIndicatorStore } from "../store/indicatorStore";
+import type { ThemeTokens } from "../theme/tokens";
+import { useThemedStyles } from "../theme/useThemedStyles";
 import { calculateConsistencyStreak, calculateTeamPoints, calculateTier, TIER_EMOJI } from "../utils/teamAchievements";
 
 /**
@@ -9,6 +11,7 @@ import { calculateConsistencyStreak, calculateTeamPoints, calculateTier, TIER_EM
  * sequência de consistência e selo por tier. Nunca ranking de pacientes.
  */
 export function TeamAchievementsCard() {
+  const styles = useThemedStyles(createStyles);
   const tasksByPatient = useCarePlanStore((s) => s.tasksByPatient);
   const assessmentsByPatient = useIndicatorStore((s) => s.assessmentsByPatient);
 
@@ -47,17 +50,19 @@ export function TeamAchievementsCard() {
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.surfaceRaised,
-    borderRadius: radii.lg,
-    padding: spacing.md,
-    ...shadows.md,
-  },
-  title: { fontSize: 18, fontWeight: "700", color: colors.textPrimary, marginBottom: spacing.sm },
-  row: { flexDirection: "row", gap: spacing.lg },
-  metric: { alignItems: "center", flex: 1 },
-  metricValue: { fontSize: 22, fontWeight: "700", color: colors.textPrimary },
-  metricLabel: { fontSize: 12, color: colors.textSecondary, textAlign: "center" },
-  hint: { fontSize: 12, color: colors.textMuted, marginTop: spacing.sm },
-});
+function createStyles(tokens: ThemeTokens) {
+  return StyleSheet.create({
+    card: {
+      backgroundColor: tokens.surfaceRaised,
+      borderRadius: radii.lg,
+      padding: spacing.md,
+      ...shadows.md,
+    },
+    title: { fontSize: 18, fontWeight: "700", color: tokens.ink, marginBottom: spacing.sm },
+    row: { flexDirection: "row", gap: spacing.lg },
+    metric: { alignItems: "center", flex: 1 },
+    metricValue: { fontSize: 22, fontWeight: "700", color: tokens.ink },
+    metricLabel: { fontSize: 12, color: tokens.inkSecondary, textAlign: "center" },
+    hint: { fontSize: 12, color: tokens.inkMuted, marginTop: spacing.sm },
+  });
+}

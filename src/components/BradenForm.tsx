@@ -8,9 +8,10 @@ import {
   type BradenScores,
   type BradenSubscaleKey,
 } from "../constants/clinicalScales";
-import { colors } from "../constants/theme";
 import { MOCK_CURRENT_USER_ID } from "../constants/mockSession";
 import { useIndicatorStore } from "../store/indicatorStore";
+import type { ThemeTokens } from "../theme/tokens";
+import { useThemedStyles } from "../theme/useThemedStyles";
 import { Card } from "./Card";
 import { SubscalePicker } from "./SubscalePicker";
 
@@ -23,6 +24,7 @@ type PartialScores = Partial<Record<BradenSubscaleKey, number>>;
 
 /** Formulário completo da Escala de Braden (seção 2.4.1) — 6 subescalas + escore + classificação. */
 export function BradenForm({ patientId, onSubmitted }: BradenFormProps) {
+  const styles = useThemedStyles(createStyles);
   const [scores, setScores] = useState<PartialScores>({});
   const addAssessment = useIndicatorStore((s) => s.addAssessment);
 
@@ -73,9 +75,11 @@ export function BradenForm({ patientId, onSubmitted }: BradenFormProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { gap: 12, paddingBottom: 32 },
-  resultScore: { fontSize: 16, fontWeight: "700", color: colors.textPrimary },
-  resultHint: { fontSize: 13, color: colors.textSecondary, marginTop: 4 },
-  pending: { fontSize: 13, color: colors.textSecondary },
-});
+function createStyles(tokens: ThemeTokens) {
+  return StyleSheet.create({
+    container: { gap: 12, paddingBottom: 32 },
+    resultScore: { fontSize: 16, fontWeight: "700", color: tokens.ink },
+    resultHint: { fontSize: 13, color: tokens.inkSecondary, marginTop: 4 },
+    pending: { fontSize: 13, color: tokens.inkSecondary },
+  });
+}

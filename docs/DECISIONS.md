@@ -75,8 +75,9 @@ pendência visível no perfil (não implementado nesta rodada — ver Fase 5).
 fechado de `AuditAction` (seção 4.3.2), pois a lista original não previa
 criação interativa de paciente pela UI.
 
-**Status:** Aceita; revisar quando o fluxo de edição completa de perfil for
-implementado.
+**Status:** Superada pela ADR-010 — o formulário "Novo Paciente" passou a
+coletar contato de emergência, cuidador responsável e consentimento LGPD
+diretamente na criação, fechando a lacuna descrita acima.
 
 ## ADR-006: Gamificação redirecionada à equipe, nunca ao paciente
 
@@ -121,6 +122,41 @@ reordena a prioridade dentro da coluna** (`priorityOrder`,
 `reorderTasks()` em `carePlanStore.ts`); mover para "Completo" continua
 exigindo o gesto explícito de swipe-to-confirm, que já gera timestamp e
 evento de auditoria.
+
+**Status:** Aceita.
+
+## ADR-009: Mock de paciente único (Valdir da Silva) substitui o gerador de 20 pacientes
+
+**Contexto:** pedido explícito do usuário para simplificar o ambiente de
+demonstração para um único paciente fixo e realista, em vez do gerador
+aleatório determinístico de 20 pacientes da Fase 1.
+
+**Decisão:** `src/data/mockPatients.ts` substitui `generateMockPatients()`
+(removida de `src/utils/mockData.ts`). O paciente único (Valdir da Silva, 62
+anos, IC CID I50.0) inclui contato de emergência, cuidador e consentimento
+já preenchidos. `generateMockCarePlanTasks()` foi ajustado para garantir uma
+tarefa pendente às 14h de hoje ("próxima visita"). Testes que assumiam 20
+pacientes foram atualizados (`mockData.test.ts`, `patientStore.test.ts`) e
+um novo `mockPatients.test.ts` valida os dados fixos (CPF com dígito
+verificador válido, campos obrigatórios preenchidos).
+
+**Status:** Aceita.
+
+## ADR-010: Remoção de paciente auditada e restrita a ADMIN
+
+**Contexto:** o botão "Remover paciente" no perfil precisa de uma ação de
+store que só pode ser executada pelo coordenador (ADMIN), com trilha de
+auditoria — nunca uma exclusão silenciosa.
+
+**Decisão:** `patientStore.removePatient(userId, role, patientId)` chama
+`assertPermission(..., "patient.editProfile", ...)` (matriz RBAC já
+existente, seção 4.3.3 — remoção de perfil tratada como variante de edição
+de perfil, ADMIN-only) antes de fazer soft delete; nega e registra
+`access.denied` para outros papéis. Em caso de sucesso, registra o evento
+`patient.remove`, adicionado ao conjunto fechado de `AuditAction`. A UI
+exige confirmação dupla (digitar "REMOVER") antes de chamar esta ação. O
+método antigo `softDeletePatient` (sem permissão nem auditoria) foi
+removido para não deixar um caminho de exclusão não controlado no store.
 
 **Status:** Aceita.
 

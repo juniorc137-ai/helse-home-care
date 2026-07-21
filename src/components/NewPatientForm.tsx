@@ -1,10 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { Button, HelperText, RadioButton, TextInput } from "react-native-paper";
+import { Button, Checkbox, HelperText, RadioButton, TextInput } from "react-native-paper";
 import { MOCK_CURRENT_USER_ID } from "../constants/mockSession";
-import { colors } from "../constants/theme";
 import { usePatientStore } from "../store/patientStore";
+import type { ThemeTokens } from "../theme/tokens";
+import { useThemedStyles } from "../theme/useThemedStyles";
 import { newPatientFormSchema, type NewPatientFormValues } from "../types/zodSchemas";
 import { formatCPF } from "../utils/cpf";
 import { parseCommaSeparatedList } from "../utils/textList";
@@ -22,11 +23,19 @@ const DEFAULT_VALUES: NewPatientFormValues = {
   comorbidities: "",
   allergies: "",
   activeMedications: "",
+  emergencyContactName: "",
+  emergencyContactRelationship: "",
+  emergencyContactPhone: "",
+  caregiverName: "",
+  caregiverRelationship: "",
+  caregiverAvailability: "",
+  consentGiven: false,
 };
 
-/** Formulário "Novo Paciente" (seção 2.1): validação via Zod, criação na store de pacientes. */
+/** Formulário "Novo Paciente" (seção 2.1/2.2, ADR-005 revisado): validação via Zod, criação na store de pacientes. */
 export function NewPatientForm({ onCreated }: NewPatientFormProps) {
-  const createPatient = usePatientStore((s) => s.createPatient);
+  const styles = useThemedStyles(createStyles);
+  const addPatient = usePatientStore((s) => s.addPatient);
   const {
     control,
     handleSubmit,
@@ -37,7 +46,7 @@ export function NewPatientForm({ onCreated }: NewPatientFormProps) {
   });
 
   function onSubmit(values: NewPatientFormValues) {
-    const created = createPatient(MOCK_CURRENT_USER_ID, {
+    const created = addPatient(MOCK_CURRENT_USER_ID, {
       name: values.name,
       cpf: values.cpf,
       birthDate: values.birthDate,
@@ -46,6 +55,17 @@ export function NewPatientForm({ onCreated }: NewPatientFormProps) {
       comorbidities: parseCommaSeparatedList(values.comorbidities),
       allergies: parseCommaSeparatedList(values.allergies),
       activeMedications: parseCommaSeparatedList(values.activeMedications),
+      primaryEmergencyContact: {
+        name: values.emergencyContactName,
+        relationship: values.emergencyContactRelationship,
+        phone: values.emergencyContactPhone,
+      },
+      responsibleCaregiver: {
+        name: values.caregiverName,
+        relationship: values.caregiverRelationship,
+        availability: values.caregiverAvailability,
+      },
+      consentGiven: values.consentGiven,
     });
     onCreated?.(created.id);
   }
@@ -177,6 +197,90 @@ export function NewPatientForm({ onCreated }: NewPatientFormProps) {
         )}
       />
 
+      <Text style={styles.sectionTitle}>Contato de emergência</Text>
+      <Controller
+        control={control}
+        name="emergencyContactName"
+        render={({ field }) => (
+          <View>
+            <TextInput mode="outlined" label="Nome" value={field.value} onChangeText={field.onChange} testID="new-patient-emergency-name" />
+            {errors.emergencyContactName && <HelperText type="error">{errors.emergencyContactName.message}</HelperText>}
+          </View>
+        )}
+      />
+      <Controller
+        control={control}
+        name="emergencyContactRelationship"
+        render={({ field }) => (
+          <View>
+            <TextInput mode="outlined" label="Relação com o paciente" value={field.value} onChangeText={field.onChange} testID="new-patient-emergency-relationship" />
+            {errors.emergencyContactRelationship && <HelperText type="error">{errors.emergencyContactRelationship.message}</HelperText>}
+          </View>
+        )}
+      />
+      <Controller
+        control={control}
+        name="emergencyContactPhone"
+        render={({ field }) => (
+          <View>
+            <TextInput
+              mode="outlined"
+              label="Telefone"
+              value={field.value}
+              onChangeText={field.onChange}
+              keyboardType="phone-pad"
+              testID="new-patient-emergency-phone"
+            />
+            {errors.emergencyContactPhone && <HelperText type="error">{errors.emergencyContactPhone.message}</HelperText>}
+          </View>
+        )}
+      />
+
+      <Text style={styles.sectionTitle}>Cuidador responsável</Text>
+      <Controller
+        control={control}
+        name="caregiverName"
+        render={({ field }) => (
+          <View>
+            <TextInput mode="outlined" label="Nome" value={field.value} onChangeText={field.onChange} testID="new-patient-caregiver-name" />
+            {errors.caregiverName && <HelperText type="error">{errors.caregiverName.message}</HelperText>}
+          </View>
+        )}
+      />
+      <Controller
+        control={control}
+        name="caregiverRelationship"
+        render={({ field }) => (
+          <View>
+            <TextInput mode="outlined" label="Relação com o paciente" value={field.value} onChangeText={field.onChange} testID="new-patient-caregiver-relationship" />
+            {errors.caregiverRelationship && <HelperText type="error">{errors.caregiverRelationship.message}</HelperText>}
+          </View>
+        )}
+      />
+      <Controller
+        control={control}
+        name="caregiverAvailability"
+        render={({ field }) => (
+          <View>
+            <TextInput mode="outlined" label="Disponibilidade" value={field.value} onChangeText={field.onChange} testID="new-patient-caregiver-availability" />
+            {errors.caregiverAvailability && <HelperText type="error">{errors.caregiverAvailability.message}</HelperText>}
+          </View>
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="consentGiven"
+        render={({ field }) => (
+          <Checkbox.Item
+            label="Consentimento LGPD dado pelo paciente/responsável"
+            status={field.value ? "checked" : "unchecked"}
+            onPress={() => field.onChange(!field.value)}
+            testID="new-patient-consent"
+          />
+        )}
+      />
+
       <Button mode="contained" onPress={handleSubmit(onSubmit)} testID="new-patient-submit">
         Cadastrar paciente
       </Button>
@@ -184,7 +288,10 @@ export function NewPatientForm({ onCreated }: NewPatientFormProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { gap: 12, paddingBottom: 32 },
-  label: { fontSize: 14, fontWeight: "700", color: colors.textPrimary, marginTop: 8 },
-});
+function createStyles(tokens: ThemeTokens) {
+  return StyleSheet.create({
+    container: { gap: 12, paddingBottom: 32 },
+    label: { fontSize: 14, fontWeight: "700", color: tokens.ink, marginTop: 8 },
+    sectionTitle: { fontSize: 16, fontWeight: "700", color: tokens.ink, marginTop: 16 },
+  });
+}

@@ -9,8 +9,9 @@ import {
   TEC_STEP_SECONDS,
 } from "../constants/clinicalScales";
 import { MOCK_CURRENT_USER_ID } from "../constants/mockSession";
-import { colors } from "../constants/theme";
 import { useIndicatorStore } from "../store/indicatorStore";
+import type { ThemeTokens } from "../theme/tokens";
+import { useThemedStyles } from "../theme/useThemedStyles";
 import { Card } from "./Card";
 import { StatusBadge } from "./StatusBadge";
 
@@ -26,6 +27,7 @@ function roundToStep(seconds: number): number {
 
 /** Formulário de Tempo de Enchimento Capilar (seção 2.4.2): timer visual, passo 0,5s, faixa 0-10s. */
 export function TecForm({ patientId, onSubmitted }: TecFormProps) {
+  const styles = useThemedStyles(createStyles);
   const [seconds, setSeconds] = useState(0);
   const [running, setRunning] = useState(false);
   const [hasContextualFactor, setHasContextualFactor] = useState(false);
@@ -120,9 +122,11 @@ export function TecForm({ patientId, onSubmitted }: TecFormProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { gap: 12 },
-  timerDisplay: { fontSize: 36, fontWeight: "700", color: colors.textPrimary },
-  row: { flexDirection: "row", gap: 8, flexWrap: "wrap", marginTop: 8 },
-  alertText: { fontSize: 13, color: colors.statusDanger, marginTop: 8 },
-});
+function createStyles(tokens: ThemeTokens) {
+  return StyleSheet.create({
+    container: { gap: 12 },
+    timerDisplay: { fontSize: 36, fontWeight: "700", color: tokens.ink },
+    row: { flexDirection: "row", gap: 8, flexWrap: "wrap", marginTop: 8 },
+    alertText: { fontSize: 13, color: tokens.statusDanger, marginTop: 8 },
+  });
+}

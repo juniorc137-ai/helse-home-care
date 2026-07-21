@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react-native";
+import { fireEvent, render, screen, within } from "../testUtils";
 import { BradenForm } from "../../src/components/BradenForm";
 import { useIndicatorStore } from "../../src/store/indicatorStore";
 

@@ -1,14 +1,17 @@
 import "../src/global.css";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { PaperProvider } from "react-native-paper";
+import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 import { Stack } from "expo-router";
 import { useCarePlanStore } from "../src/store/carePlanStore";
 import { usePatientStore } from "../src/store/patientStore";
 import { generateMockCarePlanTasks } from "../src/utils/mockData";
-import { colors } from "../src/constants/theme";
+import { ThemeProvider, useTheme } from "../src/theme/ThemeContext";
+import { ThemeToggleButton } from "../src/components/ThemeToggleButton";
 
-export default function RootLayout() {
+function RootLayoutNav() {
+  const { mode, tokens } = useTheme();
+
   useEffect(() => {
     usePatientStore.getState().hydrateMock();
     const patients = usePatientStore.getState().patients;
@@ -17,15 +20,36 @@ export default function RootLayout() {
     });
   }, []);
 
+  const paperTheme = {
+    ...(mode === "dark" ? MD3DarkTheme : MD3LightTheme),
+    colors: { ...(mode === "dark" ? MD3DarkTheme.colors : MD3LightTheme.colors), primary: tokens.primary },
+  };
+
+  return (
+    <PaperProvider theme={paperTheme}>
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: tokens.primary },
+          headerTintColor: "#fff",
+          headerRight: () => <ThemeToggleButton color="#fff" />,
+        }}
+      >
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="dashboard-a" options={{ headerShown: false }} />
+        <Stack.Screen name="dashboard-b" options={{ headerShown: false }} />
+        <Stack.Screen name="patient/new" options={{ title: "Novo Paciente" }} />
+        <Stack.Screen name="patient/[id]" options={{ headerShown: false }} />
+      </Stack>
+    </PaperProvider>
+  );
+}
+
+export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <PaperProvider theme={{ colors: { primary: colors.primary } }}>
-        <Stack screenOptions={{ headerStyle: { backgroundColor: colors.primary }, headerTintColor: "#fff" }}>
-          <Stack.Screen name="index" options={{ title: "Home Care — Dashboard" }} />
-          <Stack.Screen name="patient/new" options={{ title: "Novo Paciente" }} />
-          <Stack.Screen name="patient/[id]" options={{ headerShown: false }} />
-        </Stack>
-      </PaperProvider>
+      <ThemeProvider>
+        <RootLayoutNav />
+      </ThemeProvider>
     </GestureHandlerRootView>
   );
 }

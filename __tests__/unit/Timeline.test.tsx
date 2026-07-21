@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react-native";
+import { render, screen } from "../testUtils";
 import { Timeline } from "../../src/components/Timeline";
 import { useNotesStore } from "../../src/store/notesStore";
 

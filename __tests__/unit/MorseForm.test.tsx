@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react-native";
+import { fireEvent, render, screen, within } from "../testUtils";
 import { MorseForm } from "../../src/components/MorseForm";
 import { useIndicatorStore } from "../../src/store/indicatorStore";
 

@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
-import { colors } from "../constants/theme";
+import { useTheme } from "../theme/ThemeContext";
+import type { ThemeTokens } from "../theme/tokens";
 
 export type BadgeTone = "ok" | "warning" | "danger" | "neutral";
 
@@ -8,16 +9,19 @@ interface StatusBadgeProps {
   tone: BadgeTone;
 }
 
-const TONE_STYLES: Record<BadgeTone, { bg: string; text: string }> = {
-  ok: { bg: colors.statusOkBg, text: colors.statusOk },
-  warning: { bg: colors.statusWarningBg, text: colors.statusWarning },
-  danger: { bg: colors.statusDangerBg, text: colors.statusDanger },
-  neutral: { bg: colors.surface, text: colors.textSecondary },
-};
+function toneStyles(tokens: ThemeTokens): Record<BadgeTone, { bg: string; text: string }> {
+  return {
+    ok: { bg: tokens.statusOkBg, text: tokens.statusOk },
+    warning: { bg: tokens.statusWarningBg, text: tokens.statusWarning },
+    danger: { bg: tokens.statusDangerBg, text: tokens.statusDanger },
+    neutral: { bg: tokens.surface, text: tokens.inkSecondary },
+  };
+}
 
 /** Zona de toque mínima não se aplica (badge informativo, não interativo). */
 export function StatusBadge({ label, tone }: StatusBadgeProps) {
-  const toneStyle = TONE_STYLES[tone];
+  const { tokens } = useTheme();
+  const toneStyle = toneStyles(tokens)[tone];
   return (
     <View
       style={[styles.container, { backgroundColor: toneStyle.bg }]}

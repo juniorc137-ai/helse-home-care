@@ -214,6 +214,7 @@ export interface ClinicalNote {
 
 export type AuditAction =
   | "patient.create"
+  | "patient.remove"
   | "task.create"
   | "task.update"
   | "task.complete"

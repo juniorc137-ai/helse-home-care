@@ -2,8 +2,9 @@ import { useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import { calculateBradenScore, calculateMorseScore, classifyBradenScore, classifyMorseScore, classifyTec } from "../constants/clinicalScales";
-import { colors } from "../constants/theme";
 import { useIndicatorStore } from "../store/indicatorStore";
+import type { ThemeTokens } from "../theme/tokens";
+import { useThemedStyles } from "../theme/useThemedStyles";
 import type { BradenAssessment, MorseAssessment, TecAssessment } from "../types/entities";
 import { Card } from "./Card";
 
@@ -14,6 +15,7 @@ interface IndicatorsSummaryProps {
 /** Resumo dos indicadores de assistência (seção 2.4) com atalho para cada formulário. */
 export function IndicatorsSummary({ patientId }: IndicatorsSummaryProps) {
   const router = useRouter();
+  const styles = useThemedStyles(createStyles);
   const latestBraden = useIndicatorStore((s) => s.getLatest(patientId, "braden"));
   const latestTec = useIndicatorStore((s) => s.getLatest(patientId, "tec"));
   const latestMorse = useIndicatorStore((s) => s.getLatest(patientId, "morse"));
@@ -54,7 +56,9 @@ export function IndicatorsSummary({ patientId }: IndicatorsSummaryProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { gap: 12 },
-  value: { fontSize: 14, color: colors.textPrimary, marginBottom: 8 },
-});
+function createStyles(tokens: ThemeTokens) {
+  return StyleSheet.create({
+    container: { gap: 12 },
+    value: { fontSize: 14, color: tokens.ink, marginBottom: 8 },
+  });
+}

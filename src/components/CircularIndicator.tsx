@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
-import { colors } from "../constants/theme";
+import { useTheme } from "../theme/ThemeContext";
+import type { ThemeTokens } from "../theme/tokens";
+import { useThemedStyles } from "../theme/useThemedStyles";
 
 interface CircularIndicatorProps {
   label: string;
@@ -15,8 +17,24 @@ interface CircularIndicatorProps {
 
 const STROKE_WIDTH = 8;
 
+function createStyles(tokens: ThemeTokens) {
+  return StyleSheet.create({
+    container: { alignItems: "center", gap: 4, minWidth: 96 },
+    valueOverlay: {
+      position: "absolute",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    value: { fontSize: 18, fontWeight: "700", color: tokens.ink },
+    label: { fontSize: 13, fontWeight: "600", color: tokens.ink, textAlign: "center" },
+    sublabel: { fontSize: 11, color: tokens.inkSecondary, textAlign: "center" },
+  });
+}
+
 /** Indicador circular genérico (health card do perfil do paciente). */
 export function CircularIndicator({ label, value, sublabel, percent, color, size = 88, testID }: CircularIndicatorProps) {
+  const { tokens } = useTheme();
+  const styles = useThemedStyles(createStyles);
   const radius = (size - STROKE_WIDTH) / 2;
   const circumference = 2 * Math.PI * radius;
   const clamped = Math.max(0, Math.min(100, percent));
@@ -26,7 +44,7 @@ export function CircularIndicator({ label, value, sublabel, percent, color, size
     <View style={styles.container} testID={testID}>
       <View style={{ width: size, height: size }}>
         <Svg width={size} height={size}>
-          <Circle cx={size / 2} cy={size / 2} r={radius} stroke={colors.surface} strokeWidth={STROKE_WIDTH} fill="none" />
+          <Circle cx={size / 2} cy={size / 2} r={radius} stroke={tokens.surface} strokeWidth={STROKE_WIDTH} fill="none" />
           <Circle
             cx={size / 2}
             cy={size / 2}
@@ -50,15 +68,3 @@ export function CircularIndicator({ label, value, sublabel, percent, color, size
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { alignItems: "center", gap: 4, minWidth: 96 },
-  valueOverlay: {
-    position: "absolute",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  value: { fontSize: 18, fontWeight: "700", color: colors.textPrimary },
-  label: { fontSize: 13, fontWeight: "600", color: colors.textPrimary, textAlign: "center" },
-  sublabel: { fontSize: 11, color: colors.textSecondary, textAlign: "center" },
-});

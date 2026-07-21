@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { List } from "react-native-paper";
-import { colors } from "../constants/theme";
 import { useResponsive } from "../hooks/useResponsive";
+import type { ThemeTokens } from "../theme/tokens";
+import { useThemedStyles } from "../theme/useThemedStyles";
 import type { Patient } from "../types/entities";
 import { Card } from "./Card";
 import { StatusBadge } from "./StatusBadge";
@@ -12,6 +13,7 @@ interface PatientProfileViewProps {
 }
 
 function Field({ label, value }: { label: string; value: string }) {
+  const styles = useThemedStyles(createStyles);
   return (
     <View style={styles.field}>
       <Text style={styles.fieldLabel}>{label}</Text>
@@ -21,6 +23,7 @@ function Field({ label, value }: { label: string; value: string }) {
 }
 
 function IdentitySection({ patient }: { patient: Patient }) {
+  const styles = useThemedStyles(createStyles);
   return (
     <Card title="Identidade" style={styles.gridItem}>
       <Field label="Nome" value={patient.name} />
@@ -32,6 +35,7 @@ function IdentitySection({ patient }: { patient: Patient }) {
 }
 
 function ClinicalSection({ patient }: { patient: Patient }) {
+  const styles = useThemedStyles(createStyles);
   return (
     <Card title="Clínico" style={styles.gridItem}>
       <Field label="Diagnóstico principal" value={patient.mainDiagnosis} />
@@ -44,6 +48,7 @@ function ClinicalSection({ patient }: { patient: Patient }) {
 }
 
 function ContactSection({ patient }: { patient: Patient }) {
+  const styles = useThemedStyles(createStyles);
   return (
     <Card title="Contato e cuidador" style={styles.gridItem}>
       <Field
@@ -71,6 +76,7 @@ function ContactSection({ patient }: { patient: Patient }) {
 /** Perfil do Paciente (seção 2.2): read-only por padrão; 3 colunas no desktop, acordeão no mobile. */
 export function PatientProfileView({ patient }: PatientProfileViewProps) {
   const { isDesktop } = useResponsive();
+  const styles = useThemedStyles(createStyles);
   const [expandedId, setExpandedId] = useState<string>("identidade");
 
   if (isDesktop) {
@@ -98,11 +104,13 @@ export function PatientProfileView({ patient }: PatientProfileViewProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  desktopGrid: { flexDirection: "row", gap: 12 },
-  gridItem: { flex: 1 },
-  field: { marginBottom: 6 },
-  fieldLabel: { fontSize: 12, color: colors.textSecondary, fontWeight: "600" },
-  fieldValue: { fontSize: 14, color: colors.textPrimary },
-  consentRow: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 4 },
-});
+function createStyles(tokens: ThemeTokens) {
+  return StyleSheet.create({
+    desktopGrid: { flexDirection: "row", gap: 12 },
+    gridItem: { flex: 1 },
+    field: { marginBottom: 6 },
+    fieldLabel: { fontSize: 12, color: tokens.inkSecondary, fontWeight: "600" },
+    fieldValue: { fontSize: 14, color: tokens.ink },
+    consentRow: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 4 },
+  });
+}

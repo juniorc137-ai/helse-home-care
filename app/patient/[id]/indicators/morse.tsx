@@ -2,11 +2,13 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { MorseForm } from "../../../../src/components/MorseForm";
 import { useToast } from "../../../../src/components/Toast";
-import { colors } from "../../../../src/constants/theme";
+import type { ThemeTokens } from "../../../../src/theme/tokens";
+import { useThemedStyles } from "../../../../src/theme/useThemedStyles";
 
 export default function MorseScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const styles = useThemedStyles(createStyles);
   const [toast, toastElement] = useToast();
 
   return (
@@ -25,7 +27,9 @@ export default function MorseScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.surface },
-  content: { flex: 1, padding: 16 },
-});
+function createStyles(tokens: ThemeTokens) {
+  return StyleSheet.create({
+    container: { flex: 1, backgroundColor: tokens.surface },
+    content: { flex: 1, padding: 16 },
+  });
+}

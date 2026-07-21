@@ -10,6 +10,7 @@ import { useIndicatorStore } from "../../src/store/indicatorStore";
 import { useNotesStore } from "../../src/store/notesStore";
 import { usePatientStore } from "../../src/store/patientStore";
 import { __resetSyncEngineForTests, enqueueMutation, getQueueLength, syncNow } from "../../src/services/syncEngine";
+import { MOCK_PATIENT_ID } from "../../src/data/mockPatients";
 import { BRADEN_FIXTURE_HIGH_RISK } from "../fixtures/clinicalFixtures";
 
 /**
@@ -21,7 +22,7 @@ import { BRADEN_FIXTURE_HIGH_RISK } from "../fixtures/clinicalFixtures";
  */
 describe("Cenário E2E: Day in the Life (seção 5)", () => {
   const NURSE_ID = "user-nurse-01";
-  const PATIENT_ID = "patient-01";
+  const PATIENT_ID = MOCK_PATIENT_ID;
 
   beforeEach(() => {
     usePatientStore.setState({ patients: [], hydrated: false });
